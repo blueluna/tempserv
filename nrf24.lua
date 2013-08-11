@@ -48,9 +48,6 @@ int32_t nrf24_set_rx_address_byte(nrf24_handle handle, const uint8_t pipe, const
 int32_t nrf24_get_tx_address(nrf24_handle handle, uint64_t *address);
 int32_t nrf24_set_tx_address(nrf24_handle handle, const uint64_t address);
 
-int32_t nrf24_write_tx_payload(nrf24_handle handle, const uint8_t *data, const uint8_t len);
-int32_t nrf24_read_rx_payload(nrf24_handle handle, uint8_t *data, const uint8_t len);
-
 int32_t nrf24_flush_rx(nrf24_handle handle);
 int32_t nrf24_flush_tx(nrf24_handle handle);
 
@@ -68,26 +65,26 @@ local lib = ffi.load("nrf24")
 Nrf24 = { handle = ffi.new("nrf24_ctx_t[1]"), spi_handle = -1 }
 
 function Nrf24:create(spi_master, spi_device, ce_pin)
-	 obj = obj or {}
-	 setmetatable(obj, self)
-	 self.__index = self
-	 self.spi_handle = lib.nrf24_spi_open(spi_master, spi_device, 2000000, 8, 0)
-	 self.handle = lib.nrf24_open(self.spi_handle, ce_pin)
-	 self.payload_length = 0
-	 self.payload_buffer = ffi.new("uint8_t[32]");
-	 return obj
+	obj = obj or {}
+	setmetatable(obj, self)
+	self.__index = self
+	self.spi_handle = lib.nrf24_spi_open(spi_master, spi_device, 2000000, 8, 0)
+	self.handle = lib.nrf24_open(self.spi_handle, ce_pin)
+	self.payload_length = 0
+	self.payload_buffer = ffi.new("uint8_t[32]");
+	return obj
 end
 
 function Nrf24:destroy()
-	 lib.nrf24_close(self.handle)
-	 lib.nrf24_spi_close(self.spi_handle)
+	lib.nrf24_close(self.handle)
+	lib.nrf24_spi_close(self.spi_handle)
 end
 
 function Nrf24:get_register(address)
 	local value = ffi.new("uint8_t[1]");
 	local result = lib.nrf24_get_register(self.handle, address, value)
 	if result >= 0 then
-	   return value[0]
+		return value[0]
 	else
 		return result
 	end
@@ -95,7 +92,7 @@ end
 
 function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, crc_bytes)
 	if payload_len <= 32 then
-	   self.payload_length = payload_len
+		self.payload_length = payload_len
 	else
 		return -1;
 	end
@@ -103,20 +100,20 @@ function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, 
 	local result = lib.nrf24_get_channel(self.handle, reg)
 	result = lib.nrf24_set_channel(self.handle, channel)
 	if rate == 2000 then
-	    lib.nrf24_set_data_rate(self.handle, 0)
+		lib.nrf24_set_data_rate(self.handle, 0)
 	elseif rate == 1000 then
-	        lib.nrf24_set_data_rate(self.handle, 1)
+		lib.nrf24_set_data_rate(self.handle, 1)
 	else
 		lib.nrf24_set_data_rate(self.handle, 2)
 	end
 	if power == 0 then
-	   lib.nrf24_set_power(self.handle, 6)
+		lib.nrf24_set_power(self.handle, 6)
 	elseif rate == -6 then
-	   lib.nrf24_set_power(self.handle, 4)
+		lib.nrf24_set_power(self.handle, 4)
 	elseif rate == -12 then
-	   lib.nrf24_set_power(self.handle, 2)
+		lib.nrf24_set_power(self.handle, 2)
 	else
-	   lib.nrf24_set_power(self.handle, 0) -- -18 dBm
+		lib.nrf24_set_power(self.handle, 0) -- -18 dBm
 	end
 	lib.nrf24_set_tx_address(self.handle, tx_address)
 	lib.nrf24_set_rx_address(self.handle, 0, tx_address)
@@ -143,8 +140,8 @@ function Nrf24:data_ready()
 	local dr = ffi.new("uint8_t[1]");
 	local result = lib.nrf24_get_status(self.handle, dr, nil, nil);
 	if result >= 0 then
-	   	if dr[0] == 0 then
-		   return false
+		if dr[0] == 0 then
+			return false
 		else
 			return true
 		end
@@ -155,13 +152,13 @@ end
 function Nrf24:send(data)
 	local len = 0
 	if #data > self.payload_length then
-	   return -1
+		return -1
 	end
 	for n=0, (self.payload_length - 1) do
-	    self.payload_buffer[n] = 0
+		self.payload_buffer[n] = 0
 	end
 	for n=1, #data do
-	    self.payload_buffer[n - 1] = data[n]
+		self.payload_buffer[n - 1] = data[n]
 	end
 	return lib.nrf24_send(self.handle, self.payload_buffer, self.payload_length)
 end
@@ -170,9 +167,9 @@ function Nrf24:receive()
 	bytes = {}
 	local result = lib.nrf24_receive(self.handle, self.payload_buffer, self.payload_length)
 	if result >= 0 then
-	   for n = 1,self.payload_length do
-	       bytes[n] = self.payload_buffer[n - 1]
-	   end
+		for n = 1,self.payload_length do
+			bytes[n] = self.payload_buffer[n - 1]
+		end
 	end
 	return bytes
 end
@@ -192,12 +189,12 @@ print("Listen")
 nrf:start_listen()
 local ready = false
 while (ready == false) do
-      ready = nrf:data_ready()
+	ready = nrf:data_ready()
 end
 print("Receive")
 local rx_data = nrf:receive()
 for n = 1,#rx_data do
-    print(bfmt:format(rx_data[n]))
+	print(bfmt:format(rx_data[n]))
 end
 print("End")
 nrf:stop_listen()
