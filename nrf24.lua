@@ -1,3 +1,11 @@
+-- Interface against nRF24L01 through libnrf24
+-- (C) 2013 Erik Svensson <erik.public@gmail.com>
+-- Licensed under MIT
+--
+-- Requirements
+-- * LuaJIT, http://luajit.org/
+-- * libnrf24, https://github.com/blueluna/libnrf24
+
 local ffi = require("ffi")
 
 ffi.cdef[[
@@ -68,8 +76,13 @@ function Nrf24:create(spi_master, spi_device, ce_pin)
 	obj = obj or {}
 	setmetatable(obj, self)
 	self.__index = self
-	self.spi_handle = lib.nrf24_spi_open(spi_master, spi_device, 2000000, 8, 0)
-	self.handle = lib.nrf24_open(self.spi_handle, ce_pin)
+	local spi_handle = lib.nrf24_spi_open(spi_master, spi_device, 2000000, 8, 0)
+	if spi_handle >= 0 then
+		self.spi_handle = spi_handle
+		self.handle = lib.nrf24_open(self.spi_handle, ce_pin)
+	else
+		self.spi_handle = -1
+	end
 	self.payload_length = 0
 	self.payload_buffer = ffi.new("uint8_t[32]");
 	return obj
