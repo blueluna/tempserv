@@ -136,6 +136,7 @@ function Nrf24:power_up()
 end
 
 function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, crc_bytes, retries, retry_delay)
+
 	if #tx_address < 5 then
 		return -1;
 	end
@@ -147,6 +148,7 @@ function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, 
 	else
 		return -1;
 	end
+
 	local result = lib.nrf24_set_channel(self.handle, channel)
 	if result < 0 then
 		return result
