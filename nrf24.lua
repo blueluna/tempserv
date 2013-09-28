@@ -244,12 +244,15 @@ function Nrf24:send(data)
 end
 
 function Nrf24:receive()
-	bytes = {}
+	local user_len = 0
+	local user_bytes = nil
 	local result = lib.nrf24_receive(self.handle, self.payload_buffer, self.payload_length)
-	if result >= 0 then
+	if result > 0 then
+		user_len = result
+		user_bytes = ffi.new("uint8_t[?]", user_len);
 		for n = 1,self.payload_length do
-			bytes[n] = self.payload_buffer[n - 1]
+			user_bytes[n-1] = self.payload_buffer[n-1]
 		end
 	end
-	return bytes
+	return user_bytes, user_len
 end
