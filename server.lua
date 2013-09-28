@@ -83,7 +83,10 @@ if nrf ~= nil then
 				nrf24_msleep(100)
 			until diff > 10000000
 		end
+	else
+		print('failed to setup nrf24 ' .. result)
 	end
-
 	nrf:destroy()
+else
+	print('failed to open nrf24')
 end

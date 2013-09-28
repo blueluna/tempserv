@@ -102,6 +102,9 @@ function Nrf24:create(spi_master, spi_device, ce_pin)
 		self.payload_length = 0
 		self.spi_handle = spi_handle
 		self.handle = lib.nrf24_open(spi_handle, ce_pin)
+		if self.handle == nil then
+			return nil
+		end
 		self.payload_buffer = ffi.new("uint8_t[32]");
 	else
 		print(string.format("SPI open failed with %d", spi_handle))
