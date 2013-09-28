@@ -91,18 +91,20 @@ end
 Nrf24 = { handle = ffi.new("nrf24_ctx_t[1]"), spi_handle = -1 }
 
 function Nrf24:create(spi_master, spi_device, ce_pin)
-	obj = obj or {}
-	setmetatable(obj, self)
-	self.__index = self
 	local spi_handle = lib.nrf24_spi_open(spi_master, spi_device, 2000000, 8, 0)
+	obj = nil
 	if spi_handle >= 0 then
+		obj = obj or {}
+		setmetatable(obj, self)
+		self.__index = self
+		self.payload_length = 0
 		self.spi_handle = spi_handle
-		self.handle = lib.nrf24_open(self.spi_handle, ce_pin)
+		self.handle = lib.nrf24_open(spi_handle, ce_pin)
+		self.payload_buffer = ffi.new("uint8_t[32]");
 	else
+		print(string.format("SPI open failed with %d", spi_handle))
 		self.spi_handle = -1
 	end
-	self.payload_length = 0
-	self.payload_buffer = ffi.new("uint8_t[32]");
 	return obj
 end
 
