@@ -9,7 +9,7 @@
 local ffi = require("ffi")
 
 ffi.cdef[[
-int printf(const char *fmt, ...);
+int printf ( const char *fmt, ... );
 
 void nrf24_usleep(const uint32_t microseconds);
 void nrf24_msleep(const uint32_t milliseconds);
@@ -72,6 +72,8 @@ int32_t nrf24_get_status(nrf24_handle handle, uint8_t *data_ready, uint8_t *data
 
 int32_t nrf24_send(nrf24_handle handle, const uint8_t *data, const uint8_t len);
 int32_t nrf24_receive(nrf24_handle handle, uint8_t *data, const uint8_t len);
+
+void nrf24_list(nrf24_handle handle);
 ]]
 
 local lib = ffi.load("nrf24")
@@ -257,4 +259,13 @@ function Nrf24:receive()
 		end
 	end
 	return user_bytes, user_len
+end
+
+function Nrf24:list()
+	local address = ffi.new("uint8_t");
+	local value
+	for address = 0, 0x17, 1 do
+		value = self:get_register(address)
+		print(string.format('%x: %x', address, value))
+	end
 end
