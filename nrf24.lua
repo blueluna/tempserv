@@ -123,6 +123,18 @@ function Nrf24:get_register(address)
 	end
 end
 
+function Nrf24:power_down()
+	return lib.nrf24_powerdown(self.handle)
+end
+
+function Nrf24:power_up()
+	result =  lib.nrf24_powerup(self.handle)
+	if result == 0 then
+		lib.nrf24_usleep(1500)
+	end
+	return result
+end
+
 function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, crc_bytes, retries, retry_delay)
 	if #tx_address < 5 then
 		return -1;
