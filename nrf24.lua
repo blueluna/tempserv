@@ -11,6 +11,9 @@ local ffi = require("ffi")
 ffi.cdef[[
 int printf(const char *fmt, ...);
 
+void nrf24_usleep(const uint32_t microseconds);
+void nrf24_msleep(const uint32_t milliseconds);
+
 int32_t nrf24_spi_open(const uint32_t controller, const uint32_t device, const uint32_t speed, const uint8_t bits, const uint8_t mode);
 int32_t nrf24_spi_close(const int32_t handle);
 
@@ -69,6 +72,18 @@ int32_t nrf24_receive(nrf24_handle handle, uint8_t *data, const uint8_t len);
 ]]
 
 local lib = ffi.load("nrf24")
+
+function nrf24_print(fmt, ...)
+	return lib.printf(fmt, ...)
+end
+
+function nrf24_msleep(milliseconds)
+	 return lib.nrf24_msleep(milliseconds)
+end
+
+function nrf24_usleep(microseconds)
+	 return lib.nrf24_usleep(microseconds)
+end
 
 Nrf24 = { handle = ffi.new("nrf24_ctx_t[1]"), spi_handle = -1 }
 
