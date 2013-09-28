@@ -50,6 +50,9 @@ int32_t nrf24_set_power(nrf24_handle handle, const uint8_t power);
 int32_t nrf24_get_rx_payload_length(nrf24_handle handle, const uint8_t pipe, uint8_t *length);
 int32_t nrf24_set_rx_payload_length(nrf24_handle handle, const uint8_t pipe, const uint8_t length);
 
+int32_t nrf24_get_auto_retransmit(nrf24_handle handle, uint8_t *retries, uint16_t *delay);
+int32_t nrf24_set_auto_retransmit(nrf24_handle handle, const uint8_t retries, const uint16_t delay);
+
 int32_t nrf24_clear_status(nrf24_handle handle);
 
 int32_t nrf24_get_rx_address(nrf24_handle handle, const uint8_t pipe, uint8_t *address, const uint32_t address_len);
@@ -118,7 +121,7 @@ function Nrf24:get_register(address)
 	end
 end
 
-function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, crc_bytes)
+function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, crc_bytes, retries, retry_delay)
 	if #tx_address < 5 then
 		return -1;
 	end
@@ -177,6 +180,10 @@ function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, 
 		return result
 	end
 	result = lib.nrf24_set_crc(self.handle, crc_bytes)
+	if result < 0 then
+		return result
+	end
+	result = lib.nrf24_set_auto_retransmit(self.handle, retries, retry_delay)
 	if result < 0 then
 		return result
 	end
