@@ -26,6 +26,8 @@ typedef struct nrf24_ctx_s {
 
 typedef nrf24_ctx_t* nrf24_handle;
 
+void nrf24_version(uint16_t *major, uint16_t *minor, uint16_t *fix, char *commit, const int32_t commit_len);
+
 nrf24_handle nrf24_open(const int32_t spi_handle, const uint16_t ce_pin);
 int32_t nrf24_close(nrf24_handle handle);
 
@@ -83,11 +85,20 @@ function nrf24_print(fmt, ...)
 end
 
 function nrf24_msleep(milliseconds)
-	 return lib.nrf24_msleep(milliseconds)
+	return lib.nrf24_msleep(milliseconds)
 end
 
 function nrf24_usleep(microseconds)
-	 return lib.nrf24_usleep(microseconds)
+	return lib.nrf24_usleep(microseconds)
+end
+
+function nrf24_version()
+	major = ffi.new("uint16_t[1]");
+	minor = ffi.new("uint16_t[1]");
+	fix = ffi.new("uint16_t[1]");
+	commit = ffi.new("char[128]");
+	lib.nrf24_version(major, minor, fix, commit, 128)
+	return major[0], minor[0], fix[0], ffi.string(commit)
 end
 
 Nrf24 = { handle = ffi.new("nrf24_ctx_t[1]"), spi_handle = -1 }

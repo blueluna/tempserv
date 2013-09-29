@@ -2,6 +2,8 @@ require("nrf24")
 require("decode")
 require("time")
 
+print(string.format("loaded libnrf24 %d.%d.%d (%s)", nrf24_version()))
+
 local nrf = Nrf24:create(0, 0, 25)
 if nrf ~= nil then
 	local result = nrf:setup(1, 250, 0, "serv1", "clie1", 32, 1, 5, 2000)
