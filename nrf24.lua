@@ -41,11 +41,11 @@ int32_t nrf24_set_crc(nrf24_handle handle, const uint8_t bytes);
 int32_t nrf24_get_channel(nrf24_handle handle, uint8_t *channel);
 int32_t nrf24_set_channel(nrf24_handle handle, const uint8_t channel);
 
-int32_t nrf24_get_data_rate(nrf24_handle handle, uint8_t *data_rate);
-int32_t nrf24_set_data_rate(nrf24_handle handle, const uint8_t data_rate);
+int32_t nrf24_get_data_rate(nrf24_handle handle, uint16_t *data_rate);
+int32_t nrf24_set_data_rate(nrf24_handle handle, const uint16_t data_rate);
 
-int32_t nrf24_get_power(nrf24_handle handle, uint8_t *power);
-int32_t nrf24_set_power(nrf24_handle handle, const uint8_t power);
+int32_t nrf24_get_power(nrf24_handle handle, int8_t *power);
+int32_t nrf24_set_power(nrf24_handle handle, const int8_t power);
 
 int32_t nrf24_get_rx_payload_length(nrf24_handle handle, const uint8_t pipe, uint8_t *length);
 int32_t nrf24_set_rx_payload_length(nrf24_handle handle, const uint8_t pipe, const uint8_t length);
@@ -158,25 +158,11 @@ function Nrf24:setup(channel, rate, power, tx_address, rx_address, payload_len, 
 	if result < 0 then
 		return result
 	end
-	if rate == 2000 then
-		result = lib.nrf24_set_data_rate(self.handle, 0)
-	elseif rate == 1000 then
-		result = lib.nrf24_set_data_rate(self.handle, 1)
-	else
-		result = lib.nrf24_set_data_rate(self.handle, 2)
-	end
+	result = lib.nrf24_set_data_rate(self.handle, rate)
 	if result < 0 then
 		return result
 	end
-	if power == 0 then
-		result = lib.nrf24_set_power(self.handle, 6)
-	elseif rate == -6 then
-		result = lib.nrf24_set_power(self.handle, 4)
-	elseif rate == -12 then
-		result = lib.nrf24_set_power(self.handle, 2)
-	else
-		result = lib.nrf24_set_power(self.handle, 0) -- -18 dBm
-	end
+	result = lib.nrf24_set_power(self.handle, power)
 	if result < 0 then
 		return result
 	end
