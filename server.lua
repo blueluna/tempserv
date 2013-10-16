@@ -71,7 +71,12 @@ if nrf ~= nil then
 						local code = decode_int16(rx_data+offset, len)
 						offset = offset + 2
 						len = len - 2
-						print('error: ' .. code)
+						if code == 12 then
+							local command = decode_uint8(rx_data+offset, len)
+							print('error: ' .. code .. ', ' .. command)
+						else
+							print('error: ' .. code)
+						end
 						nrf24_msleep(100)
 					end
 				else
