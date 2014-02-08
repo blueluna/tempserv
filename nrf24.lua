@@ -247,6 +247,23 @@ function Nrf24:send(data)
 	return lib.nrf24_send(self.handle, self.payload_buffer, self.payload_length)
 end
 
+function Nrf24:send_to(data, address)
+	local len = 0
+	if #data > self.payload_length then
+		return -1
+	end
+	if #address < 5 then
+		return -1;
+	end
+	for n=0, (self.payload_length - 1) do
+		self.payload_buffer[n] = 0
+	end
+	for n=1, #data do
+		self.payload_buffer[n - 1] = data[n]
+	end
+	return lib.nrf24_send_to(self.handle, self.payload_buffer, self.payload_length, address, 5)
+end
+
 function Nrf24:receive()
 	local user_len = 0
 	local user_bytes = nil
