@@ -1,3 +1,8 @@
+-- Lua application for reading measurements from a nrf24 device
+--
+-- (C) 2013-2014 Erik Svensson <erik.public@gmail.com>
+-- Licensed under MIT
+
 require("radio")
 require("time")
 require("nrf24")

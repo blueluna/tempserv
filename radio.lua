@@ -2,12 +2,10 @@
 --
 -- (C) 2014 Erik Svensson <erik.public@gmail.com>
 -- Licensed under MIT
---
 
 require("nrf24")
 require("decode")
 require("time")
-
 
 Radio = { nrf = nil }
 

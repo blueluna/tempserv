@@ -1,5 +1,6 @@
--- 
--- (C) 2013 Erik Svensson <erik.public@gmail.com>
+-- Decoding C-types from byte stream
+--
+-- (C) 2013-2014 Erik Svensson <erik.public@gmail.com>
 -- Licensed under MIT
 --
 -- Requirements

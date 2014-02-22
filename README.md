@@ -19,4 +19,4 @@ Copyright
 
 Released under the MIT license.
 
-© 2013 Erik Svensson, <erik.public@gmail.com>.
+© 2013-2014 Erik Svensson, <erik.public@gmail.com>.

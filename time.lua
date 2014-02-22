@@ -1,5 +1,6 @@
--- 
--- (C) 2013 Erik Svensson <erik.public@gmail.com>
+-- Function for measuring / waiting / handling time 
+--
+-- (C) 2013-2014 Erik Svensson <erik.public@gmail.com>
 -- Licensed under MIT
 --
 -- Requirements

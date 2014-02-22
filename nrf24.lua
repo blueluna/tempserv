@@ -1,5 +1,6 @@
 -- Interface against nRF24L01 through libnrf24
--- (C) 2013 Erik Svensson <erik.public@gmail.com>
+-- 
+-- (C) 2013-2014 Erik Svensson <erik.public@gmail.com>
 -- Licensed under MIT
 --
 -- Requirements
