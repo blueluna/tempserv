@@ -16,7 +16,7 @@ struct timeval {
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 ]]
 
-function useconds_now()
+local function useconds_now()
 	local tv = ffi.new("struct timeval [1]")
 	local usec = 0
 	local result = ffi.C.gettimeofday(tv, nil)
@@ -29,3 +29,7 @@ function useconds_now()
 	end
 	return usec
 end
+
+return {
+	useconds_now = useconds_now
+}

@@ -8,6 +8,7 @@
 -- * libnrf24, https://github.com/blueluna/libnrf24
 
 local ffi = require("ffi")
+local string = require("string")
 
 ffi.cdef[[
 int printf ( const char *fmt, ... );
@@ -81,19 +82,19 @@ void nrf24_list(nrf24_handle handle);
 
 local lib = ffi.load("nrf24")
 
-function nrf24_print(fmt, ...)
+local function printf(fmt, ...)
 	return lib.printf(fmt, ...)
 end
 
-function nrf24_msleep(milliseconds)
+local function msleep(milliseconds)
 	return lib.nrf24_msleep(milliseconds)
 end
 
-function nrf24_usleep(microseconds)
+local function usleep(microseconds)
 	return lib.nrf24_usleep(microseconds)
 end
 
-function nrf24_version()
+local function version()
 	major = ffi.new("uint16_t[1]");
 	minor = ffi.new("uint16_t[1]");
 	fix = ffi.new("uint16_t[1]");
@@ -102,7 +103,7 @@ function nrf24_version()
 	return major[0], minor[0], fix[0], ffi.string(commit)
 end
 
-Nrf24 = { handle = ffi.new("nrf24_ctx_t[1]"), spi_handle = -1 }
+local Nrf24 = { handle = ffi.new("nrf24_ctx_t[1]"), spi_handle = -1 }
 
 function Nrf24:create(spi_master, spi_device, ce_pin)
 	local spi_handle = lib.nrf24_spi_open(spi_master, spi_device, 2000000, 8, 0)
@@ -287,3 +288,11 @@ function Nrf24:list()
 		print(string.format('%x: %x', address, value))
 	end
 end
+
+return {
+	printf = printf,
+	msleep = msleep,
+	usleep = usleep,
+	version = version,
+	Nrf24 = Nrf24
+}

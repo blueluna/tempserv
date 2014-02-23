@@ -3,15 +3,22 @@
 -- (C) 2013-2014 Erik Svensson <erik.public@gmail.com>
 -- Licensed under MIT
 
-require("radio")
-require("time")
-require("nrf24")
+-- package.path doesn't seem to exist for luvit, furthermore luvit wants
+-- modules to exists in a modules directory, so following fixes this when
+-- running with luajit
+if package.path ~= nil then
+	package.path = './modules/?.lua;' .. package.path
+end
 
-local radio = Radio:open(0, 0, 25)
+local radio = require("radio")
+local time = require("time")
+local nrf24 = require("nrf24")
 
-if radio ~= nil then
-	print(radio:version())
-	radio:power_up()
+local myRadio = radio.Radio:open(0, 0, 25)
+
+if myRadio ~= nil then
+	print(myRadio:version())
+	myRadio:power_up()
 	local start
 	local diff
 	local more
@@ -19,23 +26,23 @@ if radio ~= nil then
 	local device
 	local measurement
 	while true do
-		start = useconds_now()
+		start = time.useconds_now()
 		repeat
-			success, more, device, measurement = pcall(Radio.query, radio)
+			success, more, device, measurement = pcall(radio.Radio.query, myRadio)
 			if success then
-				nrf24_print('%08llx, %.4f\n', device, measurement)
+				nrf24.printf('%08llx, %.4f\n', device, measurement)
 			else
 				print(more)
 				more = false
 			end
 		until more == false
 		repeat
-			diff = useconds_now() - start
-			nrf24_msleep(100)
+			diff = time.useconds_now() - start
+			nrf24.msleep(100)
 		until diff > 1000000
 	end
-	radio:power_down()
-	radio:close()
+	myRadio:power_down()
+	myRadio:close()
 else
 	print('failed to open nrf24')
 end

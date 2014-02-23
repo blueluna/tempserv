@@ -22,7 +22,7 @@ int32_t nrf24_decode_uint64(uint64_t *value, const uint8_t *bytes, const int32_t
 
 local lib = ffi.load("nrf24")
 
-function decode_int8(buffer, len)
+local function int8(buffer, len)
 	local value = ffi.new("int8_t[1]");
 	local result = lib.nrf24_decode_int8(value, buffer, len)
 	if result == 1 then
@@ -31,7 +31,7 @@ function decode_int8(buffer, len)
 	return nil
 end
 
-function decode_uint8(buffer, len)
+local function uint8(buffer, len)
 	local value = ffi.new("uint8_t[1]");
 	local result = lib.nrf24_decode_uint8(value, buffer, len)
 	if result == 1 then
@@ -40,7 +40,7 @@ function decode_uint8(buffer, len)
 	return nil
 end
 
-function decode_int16(buffer, len)
+local function int16(buffer, len)
 	local value = ffi.new("int16_t[1]");
 	local result = lib.nrf24_decode_int16(value, buffer, len)
 	if result == 2 then
@@ -49,7 +49,7 @@ function decode_int16(buffer, len)
 	return nil
 end
 
-function decode_uint16(buffer, len)
+local function uint16(buffer, len)
 	local value = ffi.new("uint16_t[1]");
 	local result = lib.nrf24_decode_uint16(value, buffer, len)
 	if result == 2 then
@@ -58,7 +58,7 @@ function decode_uint16(buffer, len)
 	return nil
 end
 
-function decode_int32(buffer, len)
+local function int32(buffer, len)
 	local value = ffi.new("int32_t[1]");
 	local result = lib.nrf24_decode_int32(value, buffer, len)
 	if result == 4 then
@@ -67,7 +67,7 @@ function decode_int32(buffer, len)
 	return nil
 end
 
-function decode_uint32(buffer, len)
+local function uint32(buffer, len)
 	local value = ffi.new("uint32_t[1]");
 	local result = lib.nrf24_decode_uint32(value, buffer, len)
 	if result == 4 then
@@ -76,7 +76,7 @@ function decode_uint32(buffer, len)
 	return nil
 end
 
-function decode_int64(buffer, len)
+local function int64(buffer, len)
 	local value = ffi.new("int64_t[1]");
 	local result = lib.nrf24_decode_int64(value, buffer, len)
 	if result == 8 then
@@ -85,7 +85,7 @@ function decode_int64(buffer, len)
 	return nil
 end
 
-function decode_uint64(buffer, len)
+local function uint64(buffer, len)
 	local value = ffi.new("uint64_t[1]");
 	local result = lib.nrf24_decode_uint64(value, buffer, len)
 	if result == 8 then
@@ -93,3 +93,14 @@ function decode_uint64(buffer, len)
 	end
 	return nil
 end
+
+return {
+	int8 = int8,
+	uint8 = uint8,
+	int16 = int16,
+	uint16 = uint16,
+	int32 = int32,
+	uint32 = uint32,
+	int64 = int64,
+	uint64 = uint64
+}
